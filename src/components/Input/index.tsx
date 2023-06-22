@@ -1,32 +1,54 @@
-import { TextInput, TextInputProps, View } from 'react-native';
-import { InputIconProps, InputProps } from './input.types';
+import { Text, TextInput, TextInputProps, View } from 'react-native';
+import { Controller, UseControllerProps } from 'react-hook-form';
+import { Feather } from '@expo/vector-icons';
+import clsx from "clsx";
 
 import { styles } from './styles';
+import { forwardRef } from 'react';
 
-function InputControl({ ...rest }: TextInputProps) {
+type InputProps = {
+  inputProps: TextInputProps;
+  formProps: UseControllerProps;
+  error?: string;
+  icon: keyof typeof Feather.glyphMap;
+}
+
+const Input = forwardRef<TextInput, InputProps>(({ formProps, inputProps, error = '', icon }, ref) => {
   return (
-    <TextInput style={styles.control} {...rest} />
-  )
-}
+    <Controller {...formProps} render={({ field }) => (
+      <View style={styles.container}>
+        <View style={[styles.group, error ? styles.isError : {}]}>
+          <View style={styles.icon}>
+            <Feather
+              name={icon}
+              size={24}
+              color={clsx({
+                ["#DC1637"]: error.length > 0,
+                ["#8257e5"]: (error.length === 0 && field.value),
+                ["#999"]: (!field.value && error.length === 0),
+              })}
+            />
+          </View>
 
-function InputIcon({ children }: InputIconProps) {
-  return (
-    <View style={styles.icon}>
-      {children}
-    </View>
-  )
-}
+          <TextInput
+            ref={ref}
+            style={styles.control}
+            value={field.value}
+            onChangeText={field.onChange}
+            {...inputProps}
+          />
+        </View>
 
-export function InputGroup({ children }: InputProps) {
-  return (
-    <View style={styles.group}>
-      {children}
-    </View>
+        {
+          error.length > 0 &&
+          <Text style={styles.errorText}>
+            {error}
+          </Text>
+        }
+      </View>
+    )}
+    />
   )
-}
+});
 
-export const Input = {
-  Group: InputGroup,
-  Control: InputControl,
-  Icon: InputIcon,
-}
+export { Input };

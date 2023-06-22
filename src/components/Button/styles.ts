@@ -1,16 +1,15 @@
 import { StyleSheet } from 'react-native';
 
 export const styles = StyleSheet.create({
-  group: {
+  container: {
     flexDirection: "row",
     alignItems: "center",
     height: 56,
     width: "100%",
-    backgroundColor: "#DC1637",
+    backgroundColor: "#8257e5",
     justifyContent: "center",
     padding: 16
   },
-  icon: {},
   text: {
     color: "#FFF",
     fontSize: 16,

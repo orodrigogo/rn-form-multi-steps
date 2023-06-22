@@ -8,6 +8,6 @@ export const styles = StyleSheet.create({
   },
   progress: {
     height: 4,
-    backgroundColor: "#DC1637"
+    backgroundColor: "#8257e5"
   }
 });

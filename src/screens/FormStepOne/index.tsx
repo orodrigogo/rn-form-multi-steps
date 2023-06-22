@@ -1,21 +1,22 @@
-import { Text, View } from 'react-native';
-import { Feather } from '@expo/vector-icons';
+import { Text, TextInput, View } from 'react-native';
 
+import { useFormContext } from "react-hook-form"
 import { useNavigation } from '@react-navigation/native';
-import { useAccountForm } from '../../hooks/useAccountForm';
 
 import { styles } from './styles';
 
 import { Input } from '../../components/Input';
 import { Button } from '../../components/Button';
 import { Progress } from '../../components/Progress';
+import { useRef } from 'react';
 
 export function FormStepOne() {
-  const { updateFormData } = useAccountForm();
   const { navigate } = useNavigation();
+  const { control, handleSubmit, formState: { errors } } = useFormContext<AccountProps>();
+
+  const emailRef = useRef<TextInput>(null);
 
   function handleNextStep() {
-    updateFormData({ name: "Rodrigo", email: "rodrigo@email.com" });
     navigate("formStepTwo");
   }
 
@@ -27,34 +28,51 @@ export function FormStepOne() {
         Criar sua conta
       </Text>
 
-      <Input.Group>
-        <Input.Icon>
-          <Feather name="user" size={24} color="#DC1637" />
-        </Input.Icon>
+      <Input
+        icon="user"
+        error={errors.name?.message}
+        formProps={{
+          control,
+          name: "name",
+          rules: {
+            required: "Nome é obrigatório."
+          }
+        }
+        }
+        inputProps={{
+          placeholder: "Nome",
+          onSubmitEditing: () => emailRef.current?.focus(),
+          returnKeyType: "next"
+        }}
+      />
 
-        <Input.Control
-          placeholder="Seu nome"
-        />
-      </Input.Group>
+      <Input
+        ref={emailRef}
+        icon="mail"
+        error={errors.email?.message}
+        formProps={{
+          control,
+          name: "email",
+          rules: {
+            required: "E-mail é obrigatório.",
+            pattern: {
+              value: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
+              message: "E-mail inválido."
+            }
+          }
+        }}
+        inputProps={{
+          placeholder: "E-mail",
+          onSubmitEditing: handleSubmit(handleNextStep),
+          returnKeyType: "next"
+        }}
+      />
 
-      <Input.Group>
-        <Input.Icon>
-          <Feather name="mail" size={24} color="#DC1637" />
-        </Input.Icon>
-
-        <Input.Control
-          placeholder="E-mail"
-        />
-      </Input.Group>
-
-      <Button.Group onPress={handleNextStep}>
-        <Button.Text>
-          Continuar
-        </Button.Text>
-        <Button.Icon>
-          <Feather name="arrow-right" color="#FFF" size={18} />
-        </Button.Icon>
-      </Button.Group>
+      <Button
+        title="Continuar"
+        icon="arrow-right"
+        onPress={handleSubmit(handleNextStep)}
+      />
     </View>
   );
 }

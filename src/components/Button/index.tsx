@@ -1,34 +1,21 @@
-import { Text, TouchableOpacity, View } from 'react-native';
-import { ButtonIconProps, ButtonProps, ButtonTextProps } from './button.types';
+import { Text, TouchableOpacity, TouchableOpacityProps } from 'react-native';
+import { Feather } from '@expo/vector-icons';
 
 import { styles } from './styles';
 
-function ButtonGroup({ children, ...rest }: ButtonProps) {
+type ButtonProps = TouchableOpacityProps & {
+  title: string;
+  icon: keyof typeof Feather.glyphMap;
+}
+
+export function Button({ title, icon, ...rest }: ButtonProps) {
   return (
-    <TouchableOpacity style={styles.group} {...rest}>
-      {children}
+    <TouchableOpacity style={styles.container} {...rest}>
+      <Text style={styles.text}>
+        {title}
+      </Text>
+
+      <Feather name={icon} color="#FFF" size={18} />
     </TouchableOpacity>
   )
-}
-
-function ButtonIcon({ children }: ButtonIconProps) {
-  return (
-    <View style={styles.icon}>
-      {children}
-    </View>
-  )
-}
-
-function ButtonText({ children }: ButtonTextProps) {
-  return (
-    <Text style={styles.text}>
-      {children}
-    </Text>
-  )
-}
-
-export const Button = {
-  Group: ButtonGroup,
-  Text: ButtonText,
-  Icon: ButtonIcon,
 }

@@ -1,23 +1,24 @@
-import { Text, TouchableOpacity, View } from 'react-native';
-import { Feather } from '@expo/vector-icons';
-
-import { useNavigation } from '@react-navigation/native';
-import { useAccountForm } from '../../hooks/useAccountForm';
+import { Alert, Text, View } from 'react-native';
 
 import { styles } from './styles';
 
 import { Input } from '../../components/Input';
 import { Button } from '../../components/Button';
 import { Progress } from '../../components/Progress';
+import { useFormContext } from 'react-hook-form';
 
 export function FormStepThree() {
-  const { navigate } = useNavigation();
-  const { updateFormData } = useAccountForm();
+  const { control, handleSubmit, formState: { errors }, getValues } = useFormContext<AccountProps>();
 
-  function handleNextStep() {
-    updateFormData({ password: "123", passwordConfirmation: "123" });
-    navigate("confirmation");
+  function handleNextStep(data: AccountProps) {
+    console.log(data);
+    Alert.alert(JSON.stringify(data));
   }
+
+  function validatePasswordConfirmation(passwordConfirmation: string) {
+    const { password } = getValues();
+    return password === passwordConfirmation || 'As senhas devem ser iguais';
+  };
 
   return (
     <View style={styles.container}>
@@ -27,44 +28,50 @@ export function FormStepThree() {
         Escolha sua senha
       </Text>
 
-      <Input.Group>
-        <Input.Icon>
-          <Feather name="key" size={24} color="#DC1637" />
-        </Input.Icon>
+      <Input
+        icon="key"
+        error={errors.password?.message}
+        formProps={{
+          control,
+          name: "password",
+          rules: {
+            required: "Senha é obrigatória.",
+            minLength: {
+              value: 6,
+              message: "A senha deve ter pelo menos 6 dígitos"
+            }
+          }
+        }
+        }
+        inputProps={{
+          placeholder: "Senha",
+          secureTextEntry: true
+        }}
+      />
 
-        <Input.Control
-          placeholder="Senha"
-          secureTextEntry
-        />
+      <Input
+        icon="key"
+        error={errors.passwordConfirmation?.message}
+        formProps={{
+          control,
+          name: "passwordConfirmation",
+          rules: {
+            required: "Senha é obrigatória.",
+            validate: validatePasswordConfirmation,
+          }
+        }
+        }
+        inputProps={{
+          placeholder: "Confirmação da senha",
+          secureTextEntry: true
+        }}
+      />
 
-        <TouchableOpacity>
-          <Feather name="eye" size={24} color="#DC1637" />
-        </TouchableOpacity>
-      </Input.Group>
-
-      <Input.Group>
-        <Input.Icon>
-          <Feather name="key" size={24} color="#DC1637" />
-        </Input.Icon>
-
-        <Input.Control
-          placeholder="Confirmar senha"
-          secureTextEntry
-        />
-
-        <TouchableOpacity>
-          <Feather name="eye" size={24} color="#DC1637" />
-        </TouchableOpacity>
-      </Input.Group>
-
-      <Button.Group onPress={handleNextStep}>
-        <Button.Text>
-          Finalizar
-        </Button.Text>
-        <Button.Icon>
-          <Feather name="check" color="#FFF" size={18} />
-        </Button.Icon>
-      </Button.Group>
+      <Button
+        title="Finalizar"
+        icon="check"
+        onPress={handleSubmit(handleNextStep)}
+      />
     </View>
   );
 }

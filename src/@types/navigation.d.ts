@@ -5,7 +5,6 @@ export declare global {
       formStepOne: undefined;
       formStepTwo: undefined;
       formStepThree: undefined;
-      confirmation: undefined;
     }
   }
 }

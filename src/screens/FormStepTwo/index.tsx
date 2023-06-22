@@ -1,8 +1,8 @@
 import { Text, View } from 'react-native';
-import { Feather } from '@expo/vector-icons';
 
 import { useNavigation } from '@react-navigation/native';
-import { useAccountForm } from '../../hooks/useAccountForm';
+
+import { useFormContext } from 'react-hook-form';
 
 import { styles } from './styles';
 import { Input } from '../../components/Input';
@@ -11,10 +11,9 @@ import { Progress } from '../../components/Progress';
 
 export function FormStepTwo() {
   const { navigate } = useNavigation();
-  const { updateFormData } = useAccountForm();
+  const { control, handleSubmit, formState: { errors } } = useFormContext<AccountProps>();
 
   function handleNextStep() {
-    updateFormData({ birth: "Rodrigo", phone: "123" });
     navigate("formStepThree");
   }
 
@@ -27,34 +26,46 @@ export function FormStepTwo() {
         Sobre você
       </Text>
 
-      <Input.Group>
-        <Input.Icon>
-          <Feather name="calendar" size={24} color="#DC1637" />
-        </Input.Icon>
+      <Input
+        icon="calendar"
+        error={errors.birth?.message}
+        formProps={{
+          control,
+          name: "birth",
+          rules: {
+            required: "Data de nascimento é obrigatória.",
+            pattern: {
+              value: /^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/(19|20)\d{2}$/,
+              message: "Data de nascimento inválido."
+            }
+          }
+        }
+        }
+        inputProps={{ placeholder: "Data de nascimento" }}
+      />
 
-        <Input.Control
-          placeholder="Data de nascimento"
-        />
-      </Input.Group>
+      <Input
+        icon="phone"
+        error={errors.phone?.message}
+        formProps={{
+          control,
+          name: "phone",
+          rules: {
+            required: "Telefone é obrigatório.",
+            pattern: {
+              value: /^\+\d{2}\d{2}\d{5}\d{4}$/,
+              message: "Telefone inválido."
+            }
+          }
+        }}
+        inputProps={{ placeholder: "Telefone" }}
+      />
 
-      <Input.Group>
-        <Input.Icon>
-          <Feather name="phone" size={24} color="#DC1637" />
-        </Input.Icon>
-
-        <Input.Control
-          placeholder="Telefone"
-        />
-      </Input.Group>
-
-      <Button.Group onPress={handleNextStep}>
-        <Button.Text>
-          Continuar
-        </Button.Text>
-        <Button.Icon>
-          <Feather name="arrow-right" color="#FFF" size={18} />
-        </Button.Icon>
-      </Button.Group>
+      <Button
+        title="Continuar"
+        icon="arrow-right"
+        onPress={handleSubmit(handleNextStep)}
+      />
     </View>
   );
 }
