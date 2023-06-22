@@ -14,6 +14,7 @@ export const styles = StyleSheet.create({
     height: 56,
     width: 56,
     paddingLeft: 16,
+    fontSize: 16
   },
   icon: {
     height: 56,

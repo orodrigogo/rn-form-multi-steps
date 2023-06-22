@@ -1,7 +1,10 @@
-import { Form } from './src/screens/Form';
+import { Routes } from './src/routes';
+import { AccountFormProvider } from './src/contexts/AccountFormContext';
 
 export default function App() {
   return (
-    <Form />
+    <AccountFormProvider>
+      <Routes />
+    </AccountFormProvider>
   );
 }

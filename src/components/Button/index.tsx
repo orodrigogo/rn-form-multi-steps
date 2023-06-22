@@ -3,9 +3,9 @@ import { ButtonIconProps, ButtonProps, ButtonTextProps } from './button.types';
 
 import { styles } from './styles';
 
-function ButtonGroup({ children }: ButtonProps) {
+function ButtonGroup({ children, ...rest }: ButtonProps) {
   return (
-    <TouchableOpacity style={styles.group}>
+    <TouchableOpacity style={styles.group} {...rest}>
       {children}
     </TouchableOpacity>
   )

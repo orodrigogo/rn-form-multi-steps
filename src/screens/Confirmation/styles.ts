@@ -8,4 +8,7 @@ export const styles = StyleSheet.create({
     padding: 24,
     gap: 16
   },
+  title: {
+    fontSize: 18,
+  }
 });

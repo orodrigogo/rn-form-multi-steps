@@ -1,58 +1,68 @@
-import { Text, View } from 'react-native';
+import { Text, TouchableOpacity, View } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 
 import { useNavigation } from '@react-navigation/native';
 import { useAccountForm } from '../../hooks/useAccountForm';
 
 import { styles } from './styles';
+
 import { Input } from '../../components/Input';
 import { Button } from '../../components/Button';
 import { Progress } from '../../components/Progress';
 
-export function FormStepTwo() {
+export function FormStepThree() {
   const { navigate } = useNavigation();
   const { updateFormData } = useAccountForm();
 
   function handleNextStep() {
-    updateFormData({ birth: "Rodrigo", phone: "123" });
-    navigate("formStepThree");
+    updateFormData({ password: "123", passwordConfirmation: "123" });
+    navigate("confirmation");
   }
 
   return (
     <View style={styles.container}>
-      <Progress progress={60} />
-
+      <Progress progress={100} />
 
       <Text style={styles.title}>
-        Sobre você
+        Escolha sua senha
       </Text>
 
       <Input.Group>
         <Input.Icon>
-          <Feather name="calendar" size={24} color="#DC1637" />
+          <Feather name="key" size={24} color="#DC1637" />
         </Input.Icon>
 
         <Input.Control
-          placeholder="Data de nascimento"
+          placeholder="Senha"
+          secureTextEntry
         />
+
+        <TouchableOpacity>
+          <Feather name="eye" size={24} color="#DC1637" />
+        </TouchableOpacity>
       </Input.Group>
 
       <Input.Group>
         <Input.Icon>
-          <Feather name="phone" size={24} color="#DC1637" />
+          <Feather name="key" size={24} color="#DC1637" />
         </Input.Icon>
 
         <Input.Control
-          placeholder="Telefone"
+          placeholder="Confirmar senha"
+          secureTextEntry
         />
+
+        <TouchableOpacity>
+          <Feather name="eye" size={24} color="#DC1637" />
+        </TouchableOpacity>
       </Input.Group>
 
       <Button.Group onPress={handleNextStep}>
         <Button.Text>
-          Continuar
+          Finalizar
         </Button.Text>
         <Button.Icon>
-          <Feather name="arrow-right" color="#FFF" size={18} />
+          <Feather name="check" color="#FFF" size={18} />
         </Button.Icon>
       </Button.Group>
     </View>
